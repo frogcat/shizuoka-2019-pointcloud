@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>LPデータ(富士山南東部・伊豆東部点群データ,静岡県)</title>
+  <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet.vectorgrid@1.3.0/dist/Leaflet.VectorGrid.bundled.min.js"></script>
+  <script src="script.js"></script>
+</head>
+
+<body>
+  <div id="container">
+    <a href="./">back to index</a>
+    <h1>LP データ</h1>
+    <p>これは <a href="https://www.geospatial.jp/ckan/dataset/shizuoka-2019-pointcloud/resource/d5e98a7b-f15c-45b0-bf40-0287f5b1de68">
+        G空間情報センター 静岡県　富士山南東部・伊豆東部　点群データ : LP データ</a> を矩形選択してダウンロードするためのツールです</p>
+    <ol>
+      <li>地図上のマーカーをドラッグしてください</li>
+      <li>選択された矩形に応じて URL list が更新されます</li>
+      <li>URL list はダウンローダー等でご利用ください</li>
+    </ol>
+    <p><b id="count">0</b> 件のデータが選択されています</p>
+    <div id="map"></div>
+    <textarea id="urls"></textarea>
+    <footer>©2020 <a href='https://github.com/frogcat'>frogcat</a></footer>
+  </div>
+  <script>
+    init({
+      mapOption: {
+        maxZoom: 19,
+        zoom: 10,
+        center: [34.9223, 138.8457],
+        preferCanvas: true
+      },
+      bounds: L.latLngBounds([
+        [35.06147690849717, 139.19815063476565],
+        [35.00975247399124, 139.1239929199219]
+      ]),
+      attribution: '<a href="https://www.geospatial.jp/ckan/dataset/shizuoka-2019-pointcloud/resource/d5e98a7b-f15c-45b0-bf40-0287f5b1de68">静岡県富士山南東部・伊豆東部点群データ:LP データ(静岡県／G空間情報センター)</a>',
+      pbfOption: {
+        url: "https://gic-shizuoka.s3-ap-northeast-1.amazonaws.com/2020/Vectortile/LP00/{z}/{x}/{y}.pbf",
+        maxZoom: 18,
+        maxNativeZoom: 10,
+        minZoom: 10
+      }
+    });
+  </script>
+</body>
+
+</html>
