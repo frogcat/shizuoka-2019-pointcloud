@@ -19,27 +19,18 @@ function init(config) {
 
   const bounds = config.bounds;
 
-  const group = L.geoJson({
-    type: "FeatureCollection",
-    features: []
-  }, {
-    style: inactive,
-    onEachFeature: function(feature, layer) {
-      layer.bindTooltip(feature.properties.MESH_NO);
-    },
-    attribution: config.attribution
-  }).addTo(map);
+  const cells = {};
 
   const update = function() {
     const box = L.latLngBounds(markers.map(m => m.getLatLng()));
     rectangle.setBounds(box);
 
     const urls = [];
-    group.getLayers().forEach((layer, i) => {
+    Object.keys(cells).filter(url => {
+      const layer = cells[url];
       if (layer.getBounds().intersects(box)) {
         layer.setStyle(active);
-        const url = layer.feature.properties.URL;
-        if (urls.indexOf(url) === -1) urls.push(url);
+        urls.push(url);
       } else {
         layer.setStyle(inactive);
       }
@@ -66,12 +57,22 @@ function init(config) {
 
   Object.assign(L.gridLayer(config.pbfOption), {
     createTile: function(coords) {
-      fetch(L.Util.template(this.options.url, coords)).then(a => a.arrayBuffer()).then(buffer => {
+      fetch(L.Util.template(this.options.url, coords)).then(a => a.ok ? a.arrayBuffer() : null).then(buffer => {
+        if (buffer === null) return;
         var layers = new VectorTile(new Pbf(buffer)).layers;
         Object.keys(layers).forEach(name => {
           var layer = layers[name];
           for (var i = 0; i < layer.length; i++) {
-            group.addData(layer.feature(i).toGeoJSON(coords.x, coords.y, coords.z));
+            const json = layer.feature(i).toGeoJSON(coords.x, coords.y, coords.z);
+            const bbox = L.latLngBounds(json.geometry.coordinates[0].map(x => x.reverse()));
+            const url = json.properties.URL;
+            if (cells[url] === undefined) {
+              cells[url] = L.rectangle(bbox, Object.assign({
+                attribution: config.attribution
+              }, inactive)).bindTooltip(json.properties.MESH_NO).addTo(map);
+            } else {
+              cells[url].setBounds(cells[url].getBounds().extend(bbox));
+            }
           }
         });
         update();
