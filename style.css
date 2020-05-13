@@ -9,6 +9,12 @@ h1 {
   line-height: 1.5em;
 }
 
+h2 {
+  font-size: 20px;
+  margin: 0.1em;
+  padding: 0;
+}
+
 a {
   color: #2763ad;
 }
@@ -32,4 +38,9 @@ a {
 footer {
   text-align: center;
   margin: 1em auto;
+}
+
+.note {
+  background: #ffe79a;
+  padding: 0.5em;
 }
