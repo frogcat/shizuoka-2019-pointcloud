@@ -12,6 +12,11 @@ function init(config) {
 
   const map = L.map("map", config.mapOption);
 
+  L.control.scale({
+    imperial: false,
+    metric: true
+  }).addTo(map);
+
   L.tileLayer('https://maps.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png', {
     attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>"
   }).addTo(map);
